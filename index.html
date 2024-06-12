@@ -83,6 +83,69 @@
         .styled-form input[type="submit"]:hover {
             background-color: #4cae4c;
         }
+        #page3 p {
+            text-align: justify; /* Justify the text for a clean look */
+            line-height: 1.6; /* Improve readability with more space between lines */
+            margin: 0 20px; /* Add some horizontal padding */
+            font-size: 16px; /* Adjust font size if necessary */
+            filter: blur(5px); /* Adjust the pixel value to the desired blur amount */
+        }
+
+        #passwordContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #passwordSection {
+            z-index: 2; /* Ensure it's above the blurred text */
+            background: rgba(255, 255, 255, 0.8); /* Optional: Add a white background with some opacity */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #passwordInput, #revealButton {
+            display: block;
+            margin: 10px auto; /* Center align the input and button */
+        }
+
+        #passwordInput {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #999999; /* Border color to match the theme */
+            border-radius: 5px;
+            width: 80%; /* Adjust width as needed */
+        }
+
+        #revealButton {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            background-color: #999999; /* Button color to match the theme */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: auto; /* Auto width for content fit */
+        }
+
+        #revealButton:hover {
+            background-color: #494949; /* Darker shade on hover */
+        }
+        #passwordInput.incorrect {
+            border: 2px solid #ff6b6b;
+        }
+
+        #togglePassword {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
 
     </style>
     <title>Happy Birthday!</title>
@@ -116,6 +179,15 @@
                 &emsp; ในอนาคตไม่ว่าเราจะเธอจะเจอเรื่องดีหรือแย่ เค้าอยากบอกนะว่า เธอจะมีเค้าคอยอยู่ข้างๆนะงับ ไม่ว่าจะในเวลาที่เจอเรื่องแย่ๆ ก็จะคอยเช็ดน้ำตาให้ หรือจะเป็นเหตุการณ์ดีๆเค้าก็จะคอยแสดงความยินดีและภูมิใจในตัวที่รักของเค้านะครับ<br><br>
                 
                 &emsp; ขอบคุณที่เข้ามาในชีวิตเค้าและอยู่ด้วยกันมานานขนาดนี้นะ อยู่ด้วยกันไปเรื่อยๆเลยนะครับที่รัก มาสร้างอนาคตที่ดีไปด้วยกันนะ รักข้าวจ้าวมากๆน้าา ไอ้อ้วนนน</p>
+            <!-- Add this inside your #page3 div -->
+            <div id="passwordContainer">
+                <div id="passwordSection">
+                    <input type="password" id="passwordInput" placeholder="Enter password">
+                    <i id="togglePassword" class="bi bi-eye-slash"></i> <!-- Bootstrap Icons used for eye icon -->
+                    <button id="revealButton">submit</button>
+                    <small id="passwordError" style="display: none; color: red;">Wrong password</small>
+                </div>                
+            </div>
         </div>
     </div>
 
@@ -146,6 +218,50 @@
                 page3.style.opacity = '1';
             }, 500);
         });
+
+        const revealButton = document.getElementById('revealButton');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordContainer = document.getElementById('passwordContainer');
+        const message = document.getElementById('page3').querySelector('p');
+
+        revealButton.addEventListener('click', () => {
+            const correctPassword = 'santalovekaojao'; // Replace with your actual password
+            if (passwordInput.value === correctPassword) {
+                message.style.filter = 'none';
+                passwordContainer.style.display = 'none'; // Hide the entire password container
+            }
+        });
+
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordError = document.getElementById('passwordError');
+
+        let timeout = null;
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.classList.toggle('bi-eye');
+        });
+
+        passwordInput.addEventListener('input', () => {
+            clearTimeout(timeout);
+            passwordError.style.display = 'none';
+            passwordInput.classList.remove('incorrect');
+
+            timeout = setTimeout(() => {
+                passwordInput.setAttribute('type', 'password');
+                togglePassword.classList.add('bi-eye-slash');
+                togglePassword.classList.remove('bi-eye');
+            }, 1000);
+        });
+
+        passwordInput.addEventListener('change', () => {
+            if (passwordInput.value !== 'correctPassword') { // Replace with the actual correct password
+                passwordInput.classList.add('incorrect');
+                passwordError.style.display = 'block';
+            }
+        });
+
     </script>
 </body>
 </html>
